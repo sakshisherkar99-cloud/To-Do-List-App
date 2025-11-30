@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            width: 330px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .inputSection {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #e6e6e6;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edit-btn {
+            background: #008CBA;
+            padding: 5px 8px;
+            margin-right: 5px;
+        }
+
+        .delete-btn {
+            background: #ff4d4d;
+            padding: 5px 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>To-Do List App</h2>
+
+        <div class="inputSection">
+            <input type="text" id="taskInput" placeholder="Enter task">
+            <button onclick="addTask()">Add</button>
+        </div>
+
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        // Load tasks from localStorage on page load
+        window.onload = function() {
+            showTasks();
+        };
+
+        // Add Task
+        function addTask() {
+            let input = document.getElementById("taskInput");
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+            if (input.value.trim() === "") {
+                alert("Please enter a task!");
+                return;
+            }
+
+            tasks.push(input.value);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+
+            input.value = "";
+            showTasks();
+        }
+
+        // Show Tasks
+        function showTasks() {
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            let list = document.getElementById("taskList");
+
+            list.innerHTML = "";
+
+            tasks.forEach((task, index) => {
+                list.innerHTML += `
+                    <li>
+                        ${task}
+                        <div>
+                            <button class="edit-btn" onclick="editTask(${index})">Edit</button>
+                            <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
+                        </div>
+                    </li>
+                `;
+            });
+        }
+
+        // Edit Task
+        function editTask(index) {
+            let tasks = JSON.parse(localStorage.getItem("tasks"));
+            let newTask = prompt("Edit task:", tasks[index]);
+
+            if (newTask !== null && newTask.trim() !== "") {
+                tasks[index] = newTask;
+                localStorage.setItem("tasks", JSON.stringify(tasks));
+                showTasks();
+            }
+        }
+
+        // Delete Task
+        function deleteTask(index) {
+            let tasks = JSON.parse(localStorage.getItem("tasks"));
+            tasks.splice(index, 1);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            showTasks();
+        }
+    </script>
+
+</body>
+</html>
